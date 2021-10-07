@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
+const userData = require("../data/userData");
 
 const server = express();
 
@@ -31,8 +32,41 @@ server.get("/", (req, res) => {
         </ul>
     `);
 });
+
 server.get("/api/users", (req, res) => {
-  res.send("array of users");
+  res.json({ message: "username and password list", data: userData });
+});
+
+server.post("/api/register", (req, res) => {
+  const newUser = req.body;
+  if (!req.body.username || !req.body.password) {
+    res.status(400).json({ message: "username and password required" });
+  } else {
+    userData.push(newUser);
+    res.status(201).json(newUser);
+  }
+});
+
+server.post("/api/login", (req, res) => {
+  const credentials = req.body;
+  const verified = userData.filter((user) => {
+    if (
+      user.username === credentials.username &&
+      user.password === credentials.password
+    ) {
+      return user;
+    } else {
+      return false;
+    }
+  });
+  if (!verified[0]) {
+    console.log("verified-->", verified);
+    res.status(400).json({ message: "please provide valid credentials" });
+  } else {
+    console.log("verified-->", verified);
+
+    res.status(201).json({ message: `Welcome ${credentials.username}` });
+  }
 });
 
 server.use("*", (req, res) => {
