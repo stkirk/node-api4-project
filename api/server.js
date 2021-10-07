@@ -65,7 +65,7 @@ server.post("/api/login", (req, res) => {
   } else {
     console.log("verified-->", verified);
 
-    res.status(201).json({ message: `Welcome ${credentials.username}` });
+    res.status(200).json({ message: `Welcome ${credentials.username}` });
   }
 });
 
